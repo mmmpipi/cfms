@@ -5,6 +5,7 @@ import net.neoforged.fml.ModLoadingIssue;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.loading.ModDirTransformerDiscoverer;
 import net.neoforged.fml.loading.StringUtils;
+import net.neoforged.fml.loading.moddiscovery.NightConfigWrapper;
 import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.IDiscoveryPipeline;
 import net.neoforged.neoforgespi.locating.IModFileCandidateLocator;
@@ -22,6 +23,8 @@ public class Locator implements IModFileCandidateLocator {
 
     private static final Logger LOGGER = ChildFolderModScanner.getLogger();
     private final Path modFolder = FMLPaths.MODSDIR.get();
+    private final Path configPath = FMLPaths.CONFIGDIR.get().resolve("CFMS.toml");
+
 
     public Locator(){
     }
@@ -32,7 +35,7 @@ public class Locator implements IModFileCandidateLocator {
 
         List<Path> excluded = ModDirTransformerDiscoverer.allExcluded();
 
-        ModFolderFind folderHelper = new ModFolderFind(this.modFolder);
+        ModFolderFind folderHelper = new ModFolderFind(this.modFolder,this.configPath);
 
         List<Path> stream = folderHelper.getAllChild()
                 .filter(p -> !excluded.contains(p))
