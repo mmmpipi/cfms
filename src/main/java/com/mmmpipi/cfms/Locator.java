@@ -1,6 +1,7 @@
 package com.mmmpipi.cfms;
 
 import com.mmmpipi.cfms.util.ModFolderFind;
+import com.mojang.logging.LogUtils;
 import net.neoforged.fml.ModLoadingIssue;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.loading.ModDirTransformerDiscoverer;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class Locator implements IModFileCandidateLocator {
 
-    private static final Logger LOGGER = ChildFolderModScanner.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     private final Path modFolder = FMLPaths.MODSDIR.get();
     private final Path configPath = FMLPaths.CONFIGDIR.get().resolve("CFMS.toml");
 

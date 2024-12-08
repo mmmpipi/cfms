@@ -35,7 +35,7 @@ public class ModFolderFind {
             if (!file.exists()){
                 FileConfig fileConfig = FileConfig.of(configPath);
                 fileConfig.load();
-                fileConfig.set("black_list",List.of("disable"));
+                fileConfig.set("black_list",List.of("disable",".connector"));
                 fileConfig.save();
                 fileConfig.close();
             }
