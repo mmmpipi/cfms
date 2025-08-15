@@ -2,7 +2,6 @@ package com.mmmpipi.cfms.util;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.mojang.logging.LogUtils;
-import net.neoforged.fml.loading.moddiscovery.NightConfigWrapper;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -50,17 +49,16 @@ public class ModFolderFind {
         }
     }
 
-    public Stream<Path> getAllChild() {
+    public ArrayList<Path> getAllChild() {
         ArrayList<Path> result = new ArrayList<>();
         this.scanFolders().forEach(folder -> {
-            try {
-                result.addAll(Files.list(folder.toPath()).toList());
-            } catch (IOException var3) {
-                LOGGER.error("",var3);
+            try (Stream<Path> stream = Files.list(folder.toPath())) {
+                result.addAll(stream.toList());
+            } catch (IOException e) {
+                LOGGER.error("",e);
             }
         });
-
-        return result.stream();
+        return result;
     }
 
     public ArrayList<File> scanFolders() {
@@ -76,9 +74,8 @@ public class ModFolderFind {
                     .map(file -> this.scanFolder(file.toPath(), fileList))
                     .forEach(file -> fileList.add(file.toFile()));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         }
-
         return folder;
     }
 }

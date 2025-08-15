@@ -6,7 +6,6 @@ import net.neoforged.fml.ModLoadingIssue;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.loading.ModDirTransformerDiscoverer;
 import net.neoforged.fml.loading.StringUtils;
-import net.neoforged.fml.loading.moddiscovery.NightConfigWrapper;
 import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.IDiscoveryPipeline;
 import net.neoforged.neoforgespi.locating.IModFileCandidateLocator;
@@ -32,18 +31,18 @@ public class Locator implements IModFileCandidateLocator {
 
     @Override
     public void findCandidates(ILaunchContext context, IDiscoveryPipeline pipeline) {
-        LOGGER.info("CHMS start!");
+        LOGGER.info("CFMS start!");
 
         List<Path> excluded = ModDirTransformerDiscoverer.allExcluded();
 
         ModFolderFind folderHelper = new ModFolderFind(this.modFolder,this.configPath);
 
-        List<Path> stream = folderHelper.getAllChild()
+        List<Path> stream = folderHelper.getAllChild().stream()
                 .filter(p -> !excluded.contains(p))
                 .sorted(Comparator.comparing(path -> StringUtils.toLowerCase(path.getFileName().toString())))
                 .filter(p -> StringUtils.toLowerCase(p.getFileName().toString()).endsWith(".jar"))
                 .toList();
-        for (var path : stream){
+        for (Path path : stream){
             if (!Files.isRegularFile(path)) {
                 pipeline.addIssue(ModLoadingIssue.warning("fml.modloadingissue.brokenfile.unknown").withAffectedPath(path));
                 continue;
