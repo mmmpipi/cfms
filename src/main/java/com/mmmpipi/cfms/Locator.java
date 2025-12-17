@@ -2,10 +2,8 @@ package com.mmmpipi.cfms;
 
 import com.mmmpipi.cfms.util.ModFolderFind;
 import com.mojang.logging.LogUtils;
-import cpw.mods.modlauncher.TransformationServiceDecorator;
 import net.neoforged.fml.ModLoadingIssue;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.fml.loading.ModDirTransformerDiscoverer;
 import net.neoforged.fml.loading.StringUtils;
 import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.IDiscoveryPipeline;
@@ -32,8 +30,6 @@ public class Locator implements IModFileCandidateLocator {
     public void findCandidates(ILaunchContext context, IDiscoveryPipeline pipeline) {
         LOGGER.info("CFMS start!");
 
-        List<Path> excluded = ModDirTransformerDiscoverer.allExcluded();
-        List<Path> selfExcluded = TransformerDiscoverer.allExcluded();
         ModFolderFind folderHelper;
         if (ChildFolderModScanner.folderHelper==null){
             ChildFolderModScanner.folderHelper = new ModFolderFind(
@@ -44,8 +40,6 @@ public class Locator implements IModFileCandidateLocator {
         folderHelper = ChildFolderModScanner.folderHelper;
 
         List<Path> stream = folderHelper.getAllChild().stream()
-                .filter(p -> !excluded.contains(p))
-                .filter(p -> !selfExcluded.contains(p))
                 .filter(p -> p.getFileName().toString().endsWith(".jar"))
                 .sorted(Comparator.comparing(path -> StringUtils.toLowerCase(path.getFileName().toString())))
                 .toList();
