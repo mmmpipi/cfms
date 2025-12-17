@@ -2,6 +2,7 @@ package com.mmmpipi.cfms.util;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.mojang.logging.LogUtils;
+import net.neoforged.fml.loading.FMLPaths;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -16,9 +17,9 @@ public class ModFolderFind {
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    private final Path modFolder;
+    public final Path modFolder;
 
-    private final Path configPath;
+    public final Path configPath;
 
     private List<String> nameList;
 

@@ -2,6 +2,7 @@ package com.mmmpipi.cfms;
 
 import com.mmmpipi.cfms.util.ModFolderFind;
 import com.mojang.logging.LogUtils;
+import cpw.mods.modlauncher.TransformationServiceDecorator;
 import net.neoforged.fml.ModLoadingIssue;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.loading.ModDirTransformerDiscoverer;
@@ -22,8 +23,6 @@ import java.util.List;
 public class Locator implements IModFileCandidateLocator {
 
     private static final Logger LOGGER = LogUtils.getLogger();
-    private final Path modFolder = FMLPaths.MODSDIR.get();
-    private final Path configPath = FMLPaths.CONFIGDIR.get().resolve("CFMS.toml");
 
 
     public Locator(){
@@ -34,13 +33,21 @@ public class Locator implements IModFileCandidateLocator {
         LOGGER.info("CFMS start!");
 
         List<Path> excluded = ModDirTransformerDiscoverer.allExcluded();
-
-        ModFolderFind folderHelper = new ModFolderFind(this.modFolder,this.configPath);
+        List<Path> selfExcluded = TransformerDiscoverer.allExcluded();
+        ModFolderFind folderHelper;
+        if (ChildFolderModScanner.folderHelper==null){
+            ChildFolderModScanner.folderHelper = new ModFolderFind(
+                    FMLPaths.MODSDIR.get(),
+                    FMLPaths.CONFIGDIR.get().resolve(ChildFolderModScanner.CONFIG_NAME)
+            );
+        }
+        folderHelper = ChildFolderModScanner.folderHelper;
 
         List<Path> stream = folderHelper.getAllChild().stream()
                 .filter(p -> !excluded.contains(p))
+                .filter(p -> !selfExcluded.contains(p))
+                .filter(p -> p.getFileName().toString().endsWith(".jar"))
                 .sorted(Comparator.comparing(path -> StringUtils.toLowerCase(path.getFileName().toString())))
-                .filter(p -> StringUtils.toLowerCase(p.getFileName().toString()).endsWith(".jar"))
                 .toList();
         for (Path path : stream){
             if (!Files.isRegularFile(path)) {
